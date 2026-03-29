@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PM Internship Scheme</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #111827;
+            --accent: #38bdf8;
+            --accent-soft: rgba(56,189,248,0.1);
+            --accent-strong: #0ea5e9;
+            --text-main: #e5e7eb;
+            --text-muted: #9ca3af;
+            --border-subtle: #1f2937;
+            --danger: #f97373;
+            --danger-soft: rgba(248,113,113,0.12);
+            --success: #4ade80;
+            --success-soft: rgba(74,222,128,0.1);
+            --input-bg: #020617;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: radial-gradient(circle at top, #1f2937 0, #020617 40%, #000 100%);
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .shell { width: 100%; max-width: 1040px; }
+
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--accent-soft);
+            background-color: rgba(15,23,42,0.9);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-muted);
+        }
+
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: var(--accent);
+        }
+
+        h1 {
+            margin: 14px 0 6px;
+            font-size: clamp(24px, 4vw, 30px);
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .subtitle {
+            margin: 0;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* Screens */
+        .screen { display: none; }
+        .screen.active { display: block; }
+
+        .card {
+            background: rgba(15,23,42,0.96);
+            border-radius: 16px;
+            border: 1px solid var(--border-subtle);
+            box-shadow: 0 18px 45px rgba(0,0,0,0.7);
+            padding: 20px 20px 18px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .card-title { font-size: 15px; font-weight: 600; }
+        .card-sub { font-size: 11px; color: var(--text-muted); }
+
+        .pill {
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            color: var(--accent);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+            gap: 12px 16px;
+        }
+
+        @media (max-width: 700px) {
+            .form-grid { grid-template-columns: minmax(0,1fr); }
+        }
+
+        .field { display: flex; flex-direction: column; gap: 5px; }
+
+        .field label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-muted);
+        }
+
+        .required-dot { color: var(--accent); margin-left: 4px; }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="email"],
+        select,
+        textarea {
+            border-radius: 9px;
+            border: 1px solid var(--border-subtle);
+            background-color: var(--input-bg);
+            padding: 8px 10px;
+            font-size: 13px;
+            color: var(--text-main);
+            outline: none;
+            transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+            width: 100%;
+        }
+
+        input::placeholder,
+        textarea::placeholder { color: #4b5563; }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 1px rgba(56,189,248,0.6);
+            background-color: #020617;
+        }
+
+        .hint { font-size: 11px; color: var(--text-muted); }
+
+        .checkbox-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .checkbox {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .checkbox input {
+            width: 13px;
+            height: 13px;
+            border-radius: 4px;
+            border: 1px solid var(--border-subtle);
+            background: var(--input-bg);
+            appearance: none;
+            display: inline-block;
+            position: relative;
+        }
+
+        .checkbox input:checked {
+            border-color: var(--accent);
+            background: var(--accent);
+        }
+
+        .checkbox input:checked::after {
+            content: "✓";
+            font-size: 10px;
+            position: absolute;
+            top: 0;
+            left: 2px;
+            color: #020617;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 6px 10px;
+            padding: 8px 10px;
+            border-radius: 10px;
+            border: 1px solid var(--border-subtle);
+            background-color: var(--input-bg);
+            max-height: 190px;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 700px) {
+            .skills-grid { grid-template-columns: minmax(0, 1fr); }
+        }
+
+        .skill-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .skill-pill input {
+            width: 13px;
+            height: 13px;
+            border-radius: 4px;
+            border: 1px solid var(--border-subtle);
+            background: var(--input-bg);
+            appearance: none;
+            display: inline-block;
+            position: relative;
+        }
+
+        .skill-pill input:checked {
+            border-color: var(--accent);
+            background: var(--accent);
+        }
+
+        .skill-pill input:checked::after {
+            content: "✓";
+            font-size: 10px;
+            position: absolute;
+            top: 0;
+            left: 2px;
+            color: #020617;
+        }
+
+        .button-row {
+            margin-top: 16px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .btn {
+            border-radius: 999px;
+            border: none;
+            padding: 8px 18px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+            color: #020617;
+            box-shadow: 0 10px 25px rgba(56,189,248,0.35);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 14px 35px rgba(56,189,248,0.5);
+            filter: brightness(1.02);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 8px 18px rgba(15,23,42,0.8);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .button-icon { font-size: 15px; }
+
+        #message {
+            margin-top: 12px;
+            padding: 9px 11px;
+            border-radius: 10px;
+            font-size: 12px;
+            display: none;
+        }
+
+        #message.success {
+            display: block;
+            background: var(--success-soft);
+            color: var(--success);
+            border: 1px solid rgba(74,222,128,0.4);
+        }
+
+        #message.error {
+            display: block;
+            background: var(--danger-soft);
+            color: var(--danger);
+            border: 1px solid rgba(248,113,113,0.4);
+        }
+
+        .rec-meta { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
+
+        .rec-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 430px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .rec-card {
+            border-radius: 12px;
+            border: 1px solid var(--border-subtle);
+            padding: 10px 11px;
+            background: radial-gradient(circle at top left, rgba(56,189,248,0.03), rgba(15,23,42,1));
+            cursor: pointer;
+        }
+
+        .rec-title { font-size: 13px; font-weight: 500; margin: 0 0 4px; }
+
+        .rec-company { font-size: 12px; color: var(--text-muted); margin: 0 0 6px; }
+
+        .rec-chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+
+        .chip {
+            font-size: 10px;
+            border-radius: 999px;
+            padding: 3px 7px;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            background: rgba(15,23,42,0.9);
+        }
+
+        .chip-accent {
+            border-color: rgba(56,189,248,0.6);
+            color: var(--accent);
+            background: rgba(15,23,42,0.9);
+        }
+
+        .empty-state {
+            font-size: 12px;
+            color: var(--text-muted);
+            padding: 10px 12px;
+            border-radius: 10px;
+            background: rgba(15,23,42,0.9);
+            border: 1px dashed var(--border-subtle);
+        }
+
+        .detail-heading {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0 0 6px;
+        }
+
+        .detail-subheading {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin: 0 0 10px;
+        }
+
+        .detail-row {
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .detail-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+
+        .detail-value { font-size: 13px; }
+
+        .detail-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .detail-description {
+            margin-top: 10px;
+            font-size: 13px;
+            color: var(--text-main);
+        }
+
+        .detail-appeal {
+            margin-top: 12px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            background: var(--accent-soft);
+            color: var(--accent-strong);
+            font-size: 12px;
+        }
+
+        #applyMessage {
+            font-size: 11px;
+            color: var(--success);
+            margin-top: 6px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="shell">
+    <div class="header">
+        <div class="badge">
+            <span class="badge-dot"></span>
+            PM INTERNSHIP SCHEME
+        </div>
+        <h1>Your personalised internship shortlists</h1>
+        <p class="subtitle">Fill in a few details — we’ll align you with roles that match your skills and background.</p>
+    </div>
+
+    <!-- SCREEN 1: PROFILE -->
+    <div id="screen-profile" class="screen active">
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">Candidate profile</div>
+                    <div class="card-sub">Age, education and skills used to match you to internships.</div>
+                </div>
+                <span class="pill">Step 1 of 3</span>
+            </div>
+
+            <form id="userForm">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="name">Full Name<span class="required-dot">●</span></label>
+                        <input id="name" type="text" placeholder="e.g., S Anushka" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="email">Email<span class="required-dot">●</span></label>
+                        <input id="email" type="email" placeholder="e.g., you@example.com" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="age">Age (21–24)<span class="required-dot">●</span></label>
+                        <input id="age" type="number" min="21" max="24" placeholder="21–24" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="phone">Phone<span class="required-dot">●</span></label>
+                        <input id="phone" type="text" placeholder="e.g., +91-91086 28138" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="education">Education Level<span class="required-dot">●</span></label>
+                        <input id="education" type="text" value="Bachelor's" placeholder="e.g., Bachelor's in AIML" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="employmentStatus">Employment Status</label>
+                        <select id="employmentStatus">
+                            <option value="unemployed">Unemployed</option>
+                            <option value="employed_part_time">Employed Part-Time</option>
+                            <option value="employed_full_time">Employed Full-Time</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="location">Current City<span class="required-dot">●</span></label>
+                        <input id="location" type="text" value="Bangalore" placeholder="e.g., Bangalore" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="income">Family Annual Income (₹)<span class="required-dot">●</span></label>
+                        <input id="income" type="number" min="0" max="800000" step="1000" placeholder="Max 8,00,000" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="preferredLocations">Preferred Locations</label>
+                        <input id="preferredLocations" type="text" value="Bangalore, Remote" placeholder="e.g., Bangalore, Hyderabad, Remote">
+                        <div class="hint">Comma-separated — leave blank if open to anywhere.</div>
+                    </div>
+
+                    <div class="field">
+                        <label for="interests">Interests</label>
+                        <input id="interests" type="text" value="Technology, AI" placeholder="e.g., Data, Product, Finance">
+                        <div class="hint">Used to prioritise domains (Data, Product, Cyber, etc.).</div>
+                    </div>
+
+                    <div class="field">
+                        <label>Primary Skills<span class="required-dot">●</span></label>
+                        <div class="skills-grid" id="skillsList">
+                            <label class="skill-pill"><input type="checkbox" value="Python"><span>Python</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="Machine Learning"><span>Machine Learning</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="Deep Learning"><span>Deep Learning</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="NLP"><span>NLP</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="Data Analysis"><span>Data Analysis</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="Statistics"><span>Statistics</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="SQL"><span>SQL</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="Excel"><span>Excel</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="Pandas"><span>Pandas</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="NumPy"><span>NumPy</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="TensorFlow"><span>TensorFlow</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="PyTorch"><span>PyTorch</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="Java"><span>Java</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="C++"><span>C++</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="C"><span>C</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="HTML/CSS"><span>HTML / CSS</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="JavaScript"><span>JavaScript</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="React"><span>React</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="REST APIs"><span>REST APIs</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="Cloud Computing"><span>Cloud (AWS / Azure / GCP)</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="AWS"><span>AWS</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="Azure"><span>Azure</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="GCP"><span>GCP</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="Docker"><span>Docker</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="Kubernetes"><span>Kubernetes</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="Linux"><span>Linux</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="Git/GitHub"><span>Git / GitHub</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="Cybersecurity"><span>Cybersecurity</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="Networking"><span>Networking Basics</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="UI/UX Design"><span>UI/UX Design</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="Figma"><span>Figma</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="Power BI"><span>Power BI</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="Tableau"><span>Tableau</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="Communication Skills"><span>Communication</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="Teamwork"><span>Teamwork</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="Leadership"><span>Leadership</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="Problem Solving"><span>Problem Solving</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="Time Management"><span>Time Management</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="Creativity"><span>Creativity</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="Product Sense"><span>Product Sense</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="Marketing Basics"><span>Marketing Basics</span></label>
+                            <label class="skill-pill"><input type="checkbox" value="Finance Basics"><span>Finance Basics</span></label>
+                        </div>
+                        <div class="hint">Select one or many — recommendations will prioritise internships that mention these skills.</div>
+                    </div>
+
+                    <div class="field">
+                        <label for="previousExperience">Previous Experience (optional)</label>
+                        <input id="previousExperience" type="text" placeholder="e.g., Data Intern at FinTech startup">
+                    </div>
+                </div>
+
+                <div class="checkbox-row">
+                    <label class="checkbox">
+                        <input id="isStudent" type="checkbox" checked>
+                        <span>Currently a full-time student</span>
+                    </label>
+                    <label class="checkbox">
+                        <input id="hasGovtJob" type="checkbox">
+                        <span>Immediate family in govt. job</span>
+                    </label>
+                </div>
+
+                <div class="button-row">
+                    <button class="btn btn-primary" type="submit">
+                        <span class="button-icon">⚡</span>
+                        <span>Continue to matches</span>
+                    </button>
+                </div>
+            </form>
+
+            <div id="message"></div>
+        </div>
+    </div>
+
+    <!-- SCREEN 2: LIST -->
+    <div id="screen-list" class="screen">
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">Recommended internships</div>
+                    <div class="card-sub">Top matches based on your profile and selected skills.</div>
+                </div>
+                <span class="pill">Step 2 of 3</span>
+            </div>
+
+            <div class="button-row" style="margin-top:0; margin-bottom:8px;">
+                <button class="btn btn-secondary" type="button" id="backToProfileBtn">← Back to profile</button>
+            </div>
+
+            <div id="listMeta" class="rec-meta"></div>
+
+            <div id="emptyState" class="empty-state">
+                Fill in your profile on the first screen and click <strong>“Continue to matches”</strong> to see personalised internships here.
+            </div>
+
+            <div id="listContainer" class="rec-list" style="display:none;"></div>
+        </div>
+    </div>
+
+    <!-- SCREEN 3: DETAIL -->
+    <div id="screen-detail" class="screen">
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">Internship details</div>
+                    <div class="card-sub">More information about the selected opportunity.</div>
+                </div>
+                <span class="pill">Step 3 of 3</span>
+            </div>
+
+            <div class="button-row" style="margin-top:0; margin-bottom:8px;">
+                <button class="btn btn-secondary" type="button" id="backToListBtn">← Back to matches</button>
+            </div>
+
+            <div id="detailBody">
+                <h2 class="detail-heading" id="detailTitle">Role title</h2>
+                <p class="detail-subheading" id="detailCompany">Company • Location</p>
+
+                <div class="detail-row">
+                    <div class="detail-label">Category</div>
+                    <div class="detail-value" id="detailCategory"></div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">Work mode</div>
+                    <div class="detail-value" id="detailMode"></div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">Stipend</div>
+                    <div class="detail-value" id="detailStipend"></div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">Application deadline</div>
+                    <div class="detail-value" id="detailDeadline"></div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">Key skills</div>
+                    <div class="detail-skills" id="detailSkills"></div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">Why you’re seeing this</div>
+                    <div class="detail-value" id="detailReasons"></div>
+                </div>
+
+                <div class="detail-description" id="detailDescription"></div>
+
+                <div class="detail-appeal" id="detailAppeal"></div>
+
+                <div class="button-row" style="justify-content:flex-start; margin-top:14px;">
+                    <button class="btn btn-primary" type="button" id="applyBtn">
+                        <span class="button-icon">✅</span>
+                        <span>Apply to this internship</span>
+                    </button>
+                </div>
+                <div id="applyMessage">Your interest has been recorded for this internship.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const BASE_URL = "http://127.0.0.1:8000";
+
+    let currentRecommendations = [];
+    let currentSelectedIndex = null;
+
+    function showScreen(name) {
+        ["profile", "list", "detail"].forEach(n => {
+            const el = document.getElementById("screen-" + n);
+            if (el) el.classList.toggle("active", n === name);
+        });
+    }
+
+    function workModeLabel(rec) {
+        return rec.is_remote ? "Work from home (Remote)" : `Offline at ${rec.raw_location || rec.location}`;
+    }
+
+    function buildAppealText(rec) {
+        const bits = [];
+
+        bits.push(`You’ll work on real-world problems at ${rec.company_name}, not just toy examples.`);
+
+        if (rec.is_remote) {
+            bits.push("This role is fully remote, so you can work from home while managing classes or other commitments.");
+        } else {
+            bits.push(`You’ll get in-office exposure in ${rec.raw_location || rec.location}, which is great for networking and learning from teammates directly.`);
+        }
+
+        if (rec.stipend && rec.stipend > 0) {
+            bits.push(`The stipend is competitive for a student role, giving you both experience and financial support.`);
+        }
+
+        if (rec.category && rec.category.toLowerCase().includes("data")) {
+            bits.push("You’ll strengthen your data and analytics profile, which is highly valued in AI / ML careers.");
+        } else if (rec.category && rec.category.toLowerCase().includes("machine")) {
+            bits.push("You’ll get hands-on experience with ML workflows, experiments and model building.");
+        } else if (rec.category && rec.category.toLowerCase().includes("software")) {
+            bits.push("You’ll practice writing production-quality code and collaborating like a real software engineer.");
+        } else if (rec.category && rec.category.toLowerCase().includes("ui/ux")) {
+            bits.push("You’ll build your design portfolio with real product screens and user flows.");
+        }
+
+        bits.push("Performing well here can make your CV stand out for future internships and full-time roles.");
+
+        return bits.join(" ");
+    }
+
+    function renderList() {
+        const listContainer = document.getElementById("listContainer");
+        const emptyState = document.getElementById("emptyState");
+        const listMeta = document.getElementById("listMeta");
+
+        if (!currentRecommendations.length) {
+            listMeta.textContent = "";
+            emptyState.style.display = "block";
+            listContainer.style.display = "none";
+            listContainer.innerHTML = "";
+            return;
+        }
+
+        emptyState.style.display = "none";
+        listContainer.style.display = "block";
+
+        listMeta.textContent = `Showing ${currentRecommendations.length} top matches. Click any card to see full details and apply.`;
+
+        listContainer.innerHTML = currentRecommendations.map((rec, idx) => {
+            const stipendText = rec.raw_stipend && rec.raw_stipend.length
+                ? (rec.stipend ? `₹${rec.stipend.toLocaleString()} / month` : `${rec.raw_stipend} / month`)
+                : "Stipend not specified";
+
+            return `
+                <div class="rec-card" data-index="${idx}">
+                    <p class="rec-title">${rec.title}</p>
+                    <p class="rec-company">${rec.company_name} • ${rec.location}</p>
+                    <div class="rec-chip-row">
+                        <span class="chip chip-accent">${rec.category}</span>
+                        <span class="chip">${workModeLabel(rec)}</span>
+                        <span class="chip">${stipendText}</span>
+                        <span class="chip">Deadline: ${rec.application_deadline}</span>
+                    </div>
+                </div>
+            `;
+        }).join("");
+
+        document.querySelectorAll(".rec-card").forEach(card => {
+            card.addEventListener("click", () => {
+                const index = parseInt(card.getAttribute("data-index"));
+                openDetail(index);
+            });
+        });
+    }
+
+    function openDetail(index) {
+        const rec = currentRecommendations[index];
+        if (!rec) return;
+        currentSelectedIndex = index;
+
+        document.getElementById("detailTitle").textContent = rec.title;
+        document.getElementById("detailCompany").textContent =
+            `${rec.company_name} • ${rec.location}`;
+
+        document.getElementById("detailCategory").textContent = rec.category;
+        document.getElementById("detailMode").textContent = workModeLabel(rec);
+
+        const stipendText = rec.raw_stipend && rec.raw_stipend.length
+            ? (rec.stipend ? `Approx. ₹${rec.stipend.toLocaleString()} per month` : `Range: ${rec.raw_stipend} per month`)
+            : "Not specified";
+        document.getElementById("detailStipend").textContent = stipendText;
+
+        document.getElementById("detailDeadline").textContent = rec.application_deadline || "Not specified";
+
+        const skillsContainer = document.getElementById("detailSkills");
+        skillsContainer.innerHTML = "";
+        const skills = (rec.skills_requirements || "")
+            .split(",")
+            .map(s => s.trim())
+            .filter(Boolean);
+        if (skills.length) {
+            skills.forEach(skill => {
+                const span = document.createElement("span");
+                span.className = "chip";
+                span.textContent = skill;
+                skillsContainer.appendChild(span);
+            });
+        } else {
+            const span = document.createElement("span");
+            span.className = "chip";
+            span.textContent = "Not specified";
+            skillsContainer.appendChild(span);
+        }
+
+        document.getElementById("detailReasons").textContent =
+            Array.isArray(rec.reasons) && rec.reasons.length
+                ? rec.reasons.join(" • ")
+                : "Good alignment with your skills and interests.";
+
+        document.getElementById("detailDescription").textContent =
+            rec.description || "No additional description available.";
+
+        document.getElementById("detailAppeal").textContent = buildAppealText(rec);
+
+        const applyMsg = document.getElementById("applyMessage");
+        applyMsg.style.display = "none";
+
+        showScreen("detail");
+    }
+
+    document.getElementById("backToProfileBtn").addEventListener("click", () => {
+        showScreen("profile");
+    });
+
+    document.getElementById("backToListBtn").addEventListener("click", () => {
+        showScreen("list");
+    });
+
+    document.getElementById("applyBtn").addEventListener("click", () => {
+        if (currentSelectedIndex === null) return;
+        const rec = currentRecommendations[currentSelectedIndex];
+        const applyMsg = document.getElementById("applyMessage");
+        applyMsg.textContent =
+            `Your interest in "${rec.title}" at ${rec.company_name} has been recorded. ` +
+            `In a real portal, this button would take you to the official application form.`;
+        applyMsg.style.display = "block";
+    });
+
+    document.getElementById("userForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const messageDiv = document.getElementById("message");
+
+        messageDiv.style.display = "none";
+        messageDiv.textContent = "";
+
+        const selectedSkills = Array.from(
+            document.querySelectorAll("#skillsList input[type='checkbox']:checked")
+        ).map(cb => cb.value);
+
+        const user = {
+            name: document.getElementById("name").value.trim(),
+            age: parseInt(document.getElementById("age").value),
+            email: document.getElementById("email").value.trim(),
+            phone: document.getElementById("phone").value.trim(),
+            employment_status: document.getElementById("employmentStatus").value,
+            is_full_time_student: document.getElementById("isStudent").checked,
+            family_annual_income: parseFloat(document.getElementById("income").value),
+            family_has_govt_job: document.getElementById("hasGovtJob").checked,
+            education_level: document.getElementById("education").value.trim(),
+            skills: selectedSkills,
+            location: document.getElementById("location").value.trim(),
+            preferred_locations: document.getElementById("preferredLocations").value
+                .split(",").map(s => s.trim()).filter(Boolean),
+            interests: document.getElementById("interests").value
+                .split(",").map(s => s.trim()).filter(Boolean),
+            previous_experience: document.getElementById("previousExperience").value.trim() || null
+        };
+
+        if (user.skills.length === 0) {
+            messageDiv.textContent = "Please tick at least one skill in the list.";
+            messageDiv.className = "error";
+            messageDiv.style.display = "block";
+            return;
+        }
+
+        try {
+            const registerResponse = await fetch(`${BASE_URL}/users/`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(user)
+            });
+
+            const registerData = await registerResponse.json();
+
+            if (registerResponse.ok && registerData.eligible) {
+                messageDiv.textContent = `Hello ${user.name || "there"} — your profile has been registered. Loading your matches…`;
+                messageDiv.className = "success";
+                messageDiv.style.display = "block";
+
+                const recResponse = await fetch(`${BASE_URL}/recommendations/${registerData.user_id}`);
+                const recData = await recResponse.json();
+
+                currentRecommendations = recData.recommendations || [];
+                renderList();
+                showScreen("list");
+
+            } else {
+                messageDiv.textContent = `Registration failed: ${registerData.reason || "An unknown error occurred."}`;
+                messageDiv.className = "error";
+                messageDiv.style.display = "block";
+            }
+
+        } catch (err) {
+            console.error(err);
+            messageDiv.textContent = "Could not contact the server. Please make sure the backend (FastAPI) is running.";
+            messageDiv.className = "error";
+            messageDiv.style.display = "block";
+        }
+    });
+</script>
+</body>
+</html>

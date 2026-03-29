@@ -1,0 +1,78 @@
+import pandas as pd
+import random
+
+titles = [
+    "Software Engineering Intern", "Data Analyst Intern", "Machine Learning Intern",
+    "Cybersecurity Intern", "Blockchain Intern", "UI/UX Design Intern",
+    "Marketing Intern", "Finance Intern", "Product Management Intern",
+    "Web Development Intern", "Full Stack Developer Intern", "AI Research Intern",
+    "Cloud Engineering Intern", "DevOps Intern", "Business Analyst Intern"
+]
+
+companies = [
+    "Google", "Amazon", "Microsoft", "TCS", "Wipro", "Infosys", "Accenture",
+    "Flipkart", "Paytm", "IBM", "Byjus", "Swiggy", "Freshworks", "Reliance", "Zoho",
+    "Adobe", "Uber", "Salesforce", "Intel", "NVIDIA"
+]
+
+locations = [
+    "Bangalore", "Mumbai", "Delhi", "Chennai", "Hyderabad", "Kolkata",
+    "Pune", "Noida", "Gurgaon", "Ahmedabad", "Jaipur", "Remote"
+]
+
+categories = [
+    "Technology", "Engineering", "Product", "Data Science", "Finance",
+    "Marketing", "Management", "Design", "Cloud", "Cybersecurity"
+]
+
+skills_pool = [
+    "Python", "Machine Learning", "Deep Learning", "Data Analysis", "SQL",
+    "Excel", "Cloud Computing", "UI/UX Design", "Java", "C++", "Cybersecurity",
+    "Communication Skills", "Critical Thinking", "Leadership", "Teamwork",
+    "Problem Solving", "Time Management", "Creativity", "AWS", "Docker", "Kubernetes"
+]
+
+descriptions = [
+    "Work on real-time projects and collaborate with cross-functional teams.",
+    "Support research and development for new initiatives.",
+    "Assist in building AI/ML models to solve business problems.",
+    "Debug code, optimize pipelines, and improve performance.",
+    "Analyze datasets to generate meaningful insights.",
+    "Contribute to design and development of scalable systems.",
+    "Participate in daily standups and agile development processes."
+]
+
+data = []
+num_rows = 1000  # ~10x larger dataset
+
+for i in range(num_rows):
+    title = random.choice(titles)
+    company = random.choice(companies)
+    location = random.choice(locations)
+    category = random.choice(categories)
+
+    # stipend sometimes None, sometimes a range
+    if random.random() < 0.3:
+        stipend = None
+    else:
+        low = random.randint(5000, 25000)
+        high = random.randint(low + 2000, low + 30000)
+        stipend = f"{low}-{high}"
+
+    skill_list = ", ".join(random.sample(skills_pool, random.randint(3, 6)))
+    desc = random.choice(descriptions)
+    deadline = f"2025-{random.randint(1,12):02d}-{random.randint(1,28):02d}"
+    is_remote = "True" if location == "Remote" else "False"
+
+    data.append([
+        title, company, desc, skill_list, location,
+        stipend, category, deadline, is_remote
+    ])
+
+df = pd.DataFrame(data, columns=[
+    "title", "company_name", "description", "skills_requirements",
+    "location", "stipend", "category", "application_deadline", "is_remote"
+])
+
+df.to_csv("internships.csv", index=False)
+print(f"Generated internships.csv with {num_rows} rows.")
